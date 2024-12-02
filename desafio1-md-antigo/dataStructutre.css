@@ -1,0 +1,112 @@
+
+.table{
+	justify-content: center;
+	margin-top: 1rem;
+	height: 10vh;
+	width: 30vw;
+}
+body{
+	background-color: #f4f4f4;
+}
+.nav{
+	margin-left: 2rem;
+	padding-top: 1rem;
+}
+.head{
+	border: none;
+}
+p{
+	align-self: end;
+	margin-bottom: 20px !important; 
+}
+.select, .input, .inputInitialDate, .inputFinalDate{
+	border: 1px solid #cbc9c9;
+	border-radius: 0.3rem;
+	margin-left: 1em;
+	padding: 0.1rem;
+	margin-top: 2em;
+	margin-bottom: 1em;
+}
+
+.head{
+	border-top: none !important; 
+	border-color: #000 !important;
+}
+
+.element{
+	border-top: none !important;
+}
+
+.section {
+	display: flex;
+	flex-direction: column;
+	width: 80%;
+	margin: 0 auto;
+  }
+
+tr{
+	border-bottom: 1px solid #f5f1f1;
+}
+.Null{
+	text-align: center;
+}
+i{
+	margin-left: 1rem;
+}
+.patientButton{
+	cursor: pointer;
+	border: none;
+	background: none;
+}
+span{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow : ellipsis;
+	max-width: 150px;
+	display: inline-block;
+}
+#page-item-parent{
+	display:flex;
+}
+.linethrough{
+	text-decoration: line-through;
+}
+
+.missingInsurance{
+	text-align: center;
+}
+.img{
+	width: 2em; 
+	height: 2em;
+	border-radius: 5em;
+	margin-right: 1em;
+	object-fit:  fill;
+}
+
+.pagination {
+	justify-content: center;
+	margin-top:1em;
+}
+
+.monthButton, .dayButton{
+	background-color: rgb(65, 137, 220);
+	border-radius: 0.3em;
+	color: #fff;
+	border: none;
+	height: 2em;
+	width: 3em;
+	padding:1px;
+}
+
+.buttons{
+	gap: 0.4em;
+	display: flex;
+	margin-top: 2em;
+	margin-left: 1em;
+}
+
+
+.blockedLink{
+pointer-events: none;
+color: gray !important; 
+}

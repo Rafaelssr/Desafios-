@@ -1,0 +1,74 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Pangolin&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+.semaforo{
+	width: 150px;
+	height: 300px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	background-color: rgb(112, 112, 112);
+	border: 5px solid  rgb(112, 112, 112);
+	border-radius: 12px;
+	flex-flow: nowrap column;
+}
+
+
+.luz{
+	position: relative;
+	width: 70px;
+	height: 130px;
+	margin: 10px auto;
+	background-color: #333;
+	border-radius: 5em;
+	transition: background-color 0.5s;
+}
+
+#vermelha{
+	background-color: red;
+	border: 2px solid black;
+}
+
+#verde{
+	background-color: green;
+	border: 2px solid black;
+}
+
+#amarela{
+	background-color: yellow;
+	border: 2px solid black;
+}
+
+.botaoPedestre{
+	margin-top: 1em;
+	border-radius: 0.5em;
+	background-color: silver;
+	padding: 0.5em;
+}
+
+.timer{
+	margin-top: 10px;
+	width: 100px;
+	height:60px;
+	background-color: rgb(81, 66, 66);
+	border-radius: 4px;
+}
+
+.botao{
+	background-color: burlywood;
+	border-radius: 1em;
+	margin-top: 1em;
+	height: 80px;
+	width: 80px;
+	font-family: monospace;
+}
+
+.contagem{
+	display: flex;
+	justify-content: center;
+	font-size: xx-large;
+	margin: 0;
+	color:aliceblue;
+	font-family: Doto;
+}
+
