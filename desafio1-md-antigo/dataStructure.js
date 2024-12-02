@@ -1,3 +1,14 @@
+/*
+PONTO ENCONTRADO: 
+- Ao pesquisar por um nome que não estja na pagina não é exibido o resultado da pesquisa
+- Botao de order paciente nao está funcionando
+- Filtro de data está errado, o valor que se inicia não devia exibir nada
+
+
+
+*/
+
+
 let dataGuides;
 let insuranceGuides;
 let currentPage = 1;
@@ -9,12 +20,12 @@ const inputInitialDate = document.querySelector(".inputInitialDate");
 const inputFinalDate = document.querySelector(".inputFinalDate");
 // função para capturar os dados
 const fetchPoints = async () => {
-  try {
+  try { // trocar try por catch .then e .catch
     const guideResponse = await fetch(
       "https://augustoferreira.com/augustoferreira/amigo/guides.json"
     ).catch((error) => {
       alert("Erro ao buscar dados do JSON :", error);
-    });
+    }); // espaço entre o metodo fetch
     const insuranceResponse = await fetch(
       "https://augustoferreira.com/augustoferreira/amigo/insurances.json"
     ).catch((error) => {
@@ -30,7 +41,7 @@ const fetchPoints = async () => {
 };
 // função para criar as células com as informações capturadas
 const callFetch = async () => {
-  const { dataGuides } = await fetchPoints();
+  const { dataGuides } = await fetchPoints(); // desestruturação mais não está sendo utilizada
   createCells(dataGuides.data.guides, currentPage);
 };
 
@@ -40,8 +51,10 @@ let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 let finalDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 document.addEventListener("DOMContentLoaded", () => {
+  // formatacao de linha errada, quebrando onde não deveria
   document.querySelector(".inputInitialDate").value =
     firstDay.toLocaleDateString("en-CA");
+  // formatacao de linha errada, quebrando onde não deveria
   document.querySelector(".inputFinalDate").value =
     finalDay.toLocaleDateString("en-CA");
 
@@ -53,17 +66,18 @@ const table = document.querySelector(".table tbody");
 // // função para apagar as linhas iniciais da tabela (utilizando nodeList)
 const clearData = () => {
   const table = document.querySelector(".table");
-  [...table.childNodes[3].children].forEach((tr) =>
+  [...table.childNodes[3].children].forEach((tr) => // quabra de linha errada, se for quebrar linha usar as chaves {}
     table.childNodes[3].removeChild(tr)
   );
 };
 
 // função para criar as opções de convênio
-const createOptions = async () => {
-  await fetchPoints();
+const createOptions = async () => { // createOptions deve ser chamada quando insuranceGuides acabar de receber os valores do fetch
+  await fetchPoints(); // se insuranceGuides já tem os valores pq chamar novamente?
 
-  const select = document.querySelector(".select");
-  let allOption = document.createElement("option");
+
+  const select = document.querySelector(".select"); // sendo utilizada em mais de um lugar, entao deveria esta global
+  let allOption = document.createElement("option"); // trocar let por const
 
   select.innerHTML = "";
 
@@ -73,7 +87,7 @@ const createOptions = async () => {
   select.appendChild(allOption);
 
   insuranceGuides?.data.forEach((insurance) => {
-    let option = document.createElement("option");
+    let option = document.createElement("option"); // trocar let por const
     option.classList.add("insuranceOptions");
     option.value = insurance.id;
     option.textContent = insurance.name;
@@ -81,9 +95,9 @@ const createOptions = async () => {
   });
 };
 // função para criar a paginação
-const createList = async () => {
-  await fetchPoints();
-  const parentElement = document.querySelector("#page-item-parent");
+const createList = async () => { // createList deve ser chamada quando dataGuides acabar de receber os valores do fetch
+  await fetchPoints(); // se dataGuides já tem o valor, pq chamar novamente? 
+  const parentElement = document.querySelector("#page-item-parent"); // deve está global
 
   parentElement.innerHTML = "";
 
@@ -91,14 +105,14 @@ const createList = async () => {
   const numberOfPages = totalGuides / totalPerPage;
 
   for (i = 1; i <= numberOfPages; i++) {
-    let li = document.createElement("li");
-    let anchor = document.createElement("a");
+    let li = document.createElement("li"); // trocar let por const
+    let anchor = document.createElement("a"); // trocar let por const
 
     li.classList.add("page-item");
     anchor.classList.add("page-link");
     anchor.textContent = i;
 
-    const page = i;
+    const page = i; // espaco após uma constante
     anchor.addEventListener("click", () => {
       createCells(dataGuides.data.guides, page);
 
@@ -110,59 +124,59 @@ const createList = async () => {
     li.appendChild(anchor);
     parentElement.appendChild(li);
   }
-};
+}; // espaco depois de uma função
 // função que cria as células e linhas da tabela
 const createCells = (guides, page, guidesPerPage = totalPerPage) => {
   const arrayOfGuides = Array.isArray(guides) ? guides : [];
 
-  const currentPageGuides = arrayOfGuides.slice(
+  const currentPageGuides = arrayOfGuides.slice( // deixar em linnha melhora a visualizacao nesse caso 
     (page - 1) * guidesPerPage,
     page * guidesPerPage
   );
 
-  clearData();
+  clearData(); // espaco
   currentPageGuides.forEach((guide) => {
     const data = new Date(guide.start_date).toLocaleDateString("pt-BR");
-    let row = table.insertRow();
-    const profileImg =
+    let row = table.insertRow();// trocar let por const
+    const profileImg = // deixar em linnha melhora a visualizacao nesse caso 
       guide.patient.thumb_url ||
       `https://cdn-icons-png.freepik.com/512/8742/8742495.png`;
 
     row.insertCell().innerHTML = data;
-    row.insertCell().innerHTML = guide.number || `<td class="Null">-</td>`;
-    const name = guide.patient.name;
+    row.insertCell().innerHTML = guide.number || `<td class="Null">-</td>`; // trocar nome de classe
+    const name = guide.patient.name; // espaco no const ou utilizar  guide.patient.name no span abaixo diretemante
     row.insertCell().innerHTML =
       `<img src="${profileImg}" class="img"></img>` + `<span>${name}</span>`;
 
     const insuranceCell = row.insertCell();
-    insuranceCell.innerHTML =
-      guide.health_insurance?.name || `<td class="Null">-</td>`;
-    if (guide.health_insurance?.is_deleted === true) {
+    insuranceCell.innerHTML = // quebrar linha desnescessaria
+      guide.health_insurance?.name || `<td class="Null">-</td>`;// trocar nome de classe
+    if (guide.health_insurance?.is_deleted === true) { // não comparar booleanos com === true ou false
       insuranceCell.classList.add("linethrough");
     }
 
     isNaN(guide.price) || guide.price === null
-      ? (row.insertCell().innerHTML = `<tdclass="Null">-</td>`)
+      ? (row.insertCell().innerHTML = `<tdclass="Null">-</td>`) // formatacao errada e trocar nome de classe
       : (row.insertCell().innerHTML = guide.price.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         }));
   });
-};
+}; // quebrar linha
 //funções para os botões da paginação
 const clickFirstPage = () => {
   currentPage = 1;
   clearData();
   createCells(dataGuides.data.guides, currentPage);
-};
-let nextLink = document.getElementById("next");
+};// quebrar linha
+let nextLink = document.getElementById("next"); // trocar let por const
 
 const clickNextPage = () => {
   if (currentPage < totalPages) {
     currentPage++;
     clearData();
     createCells(dataGuides.data.guides, currentPage);
-  }
+  } // quebrar linha
   updatePageLinks();
 };
 
@@ -171,15 +185,15 @@ const clickPreviousPage = () => {
     currentPage--;
     clearData();
     createCells(dataGuides.data.guides, currentPage);
-  }
+  } // quebrar linha
   updatePageLinks();
-};
+}; // quebrar linha
 // função para atualizar o estado dos botões de navegação
 const updatePageLinks = () => {
   const totalGuides = dataGuides.data.guides.length;
   totalPages = totalGuides / totalPerPage;
 
-  const previousLink = document.getElementById("previous");
+  const previousLink = document.getElementById("previous"); // importar global
   if (currentPage === 1) {
     previousLink.disabled = true;
     previousLink.classList.add("blockedLink");
@@ -188,7 +202,7 @@ const updatePageLinks = () => {
     previousLink.classList.remove("blockedLink");
   }
 
-  const nextLink = document.getElementById("next");
+  const nextLink = document.getElementById("next"); // importar global
   if (currentPage === totalPages) {
     nextLink.disabled = true;
     nextLink.classList.add("blockedLink");
@@ -196,14 +210,14 @@ const updatePageLinks = () => {
     nextLink.disabled = false;
     nextLink.classList.remove("blockedLink");
   }
-};
+}; // quebrar linha
 const clickLastPage = () => {
   currentPage = totalPages;
   clearData();
   createCells(dataGuides.data.guides, currentPage);
-};
+}; // quebrar linha
 // função para a ordenação dos nomes dos pacientes
-const patientButton = document.querySelector(".patientButton");
+const patientButton = document.querySelector(".patientButton"); // importacao global no topo
 const buttonStatus = () => {
   const icon = document.querySelector("i");
   const patientNames = dataGuides.data.guides;
@@ -227,7 +241,7 @@ patientButton.addEventListener("click", buttonStatus);
 
 // função para o evento do select
 function selectOptions() {
-  const select = document.querySelector(".select");
+  const select = document.querySelector(".select"); // sendo utilizada em mais de um lugar, entao deveria esta global
   const selectedInsuranceId = parseInt(select.value);
 
   if (selectedInsuranceId === 0) {
@@ -270,14 +284,14 @@ function search() {
 }
 // função para a pesquisa de pacientes por filtragem de data
 const dateSelect = () => {
-  const inputInitialDate = document.querySelector(".inputInitialDate").value;
-  const inputFinalDate = document.querySelector(".inputFinalDate").value;
+  const inputInitialDate = document.querySelector(".inputInitialDate").value; // importar global e usar o valor
+  const inputFinalDate = document.querySelector(".inputFinalDate").value; // importar global e usar o valor
   const dateInitial = inputInitialDate;
   const dateFinal = inputFinalDate;
   const filteredGuidesByDate = dataGuides.data.guides.filter((guide) => {
     return guide.start_date >= dateInitial && guide.start_date <= dateFinal;
   });
-  console.log(filteredGuidesByDate);
+  console.log(filteredGuidesByDate); // remover console.log
   if (filteredGuidesByDate.length === 0) {
     clearData();
     table.innerHTML = `<td colspan="5" style="text-align: center;">Nenhuma guia encontrada</td>`;
@@ -285,14 +299,14 @@ const dateSelect = () => {
   }
   clearData();
   createCells(filteredGuidesByDate, currentPage);
-};
+}; // quebrar linha
 // função para o botão que retorna para o primeiro e último dia do mês
 setMonthButton = () => {
   document.querySelector(".inputInitialDate").value =
     firstDay.toLocaleDateString("en-CA");
   document.querySelector(".inputFinalDate").value =
     finalDay.toLocaleDateString("en-CA");
-};
+}; // quebrar linha
 // função que retorna para o dia atual
 setDayButton = () => {
   document.querySelector(".inputInitialDate").value =
