@@ -232,8 +232,7 @@ function selectOptions() {
 
   if (selectedInsuranceId === 0) {
     clearData();
-    createCells(dataGuides.data.guides);
-    return;
+    return createCells(dataGuides.data.guides, currentPage);
   }
   const selectionsFilter = dataGuides.data.guides.filter(
     (guide) => guide.insurance_id === selectedInsuranceId
