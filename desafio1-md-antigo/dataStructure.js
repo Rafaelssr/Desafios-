@@ -4,9 +4,10 @@ let currentPage = 1;
 const totalPerPage = 2;
 let totalPages;
 totalPages = 5;
+
 const inputInitialDate = document.querySelector(".inputInitialDate");
 const inputFinalDate = document.querySelector(".inputFinalDate");
-
+// função para capturar os dados
 const fetchPoints = async () => {
   try {
     const guideResponse = await fetch(
@@ -27,7 +28,7 @@ const fetchPoints = async () => {
     console.error("error", error);
   }
 };
-
+// função para criar as células com as informações capturadas
 const callFetch = async () => {
   const { dataGuides } = await fetchPoints();
   createCells(dataGuides.data.guides, currentPage);
@@ -48,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   createList();
 });
 const table = document.querySelector(".table tbody");
+
 // // função para apagar as linhas iniciais da tabela (utilizando nodeList)
 const clearData = () => {
   const table = document.querySelector(".table");
@@ -56,6 +58,7 @@ const clearData = () => {
   );
 };
 
+// função para criar as opções de convênio
 const createOptions = async () => {
   await fetchPoints();
 
@@ -77,7 +80,7 @@ const createOptions = async () => {
     select.appendChild(option);
   });
 };
-
+// função para criar a paginação 
 const createList = async () => {
   await fetchPoints();
   const parentElement = document.querySelector("#page-item-parent");
@@ -108,7 +111,7 @@ const createList = async () => {
     parentElement.appendChild(li);
   }
 };
-
+// função que cria as células e linhas da tabela
 const createCells = (guides, page, guidesPerPage = totalPerPage) => {
   const arrayOfGuides = Array.isArray(guides) ? guides : [];
 
@@ -116,7 +119,6 @@ const createCells = (guides, page, guidesPerPage = totalPerPage) => {
     (page - 1) * guidesPerPage,
     page * guidesPerPage
   );
-  // console.log(currentPageGuides);
 
   clearData();
   currentPageGuides.forEach((guide) => {
@@ -149,12 +151,11 @@ const createCells = (guides, page, guidesPerPage = totalPerPage) => {
         }));
   });
 };
-
+//funções para os botões da paginação
 const clickFirstPage = () => {
   currentPage = 1;
   clearData();
   createCells(dataGuides.data.guides, currentPage);
-  console.log(currentPage, "currentPage");
 };
 let nextLink = document.getElementById("next");
 
@@ -175,7 +176,7 @@ const clickPreviousPage = () => {
   }
   updatePageLinks();
 };
-
+// função para atualizar o estado dos botões de navegação 
 const updatePageLinks = () => {
   const totalGuides = dataGuides.data.guides.length;
   totalPages = totalGuides / totalPerPage;
@@ -203,7 +204,7 @@ const clickLastPage = () => {
   clearData();
   createCells(dataGuides.data.guides, currentPage);
 };
-
+// função para a ordenação dos nomes dos pacientes
 const patientButton = document.querySelector(".patientButton");
 const buttonStatus = () => {
   const icon = document.querySelector("i");
@@ -251,7 +252,6 @@ function selectOptions() {
 //função para o evento da barra de pesquisa
 function search() {
   const searchBar = document.querySelector(".input").value.toLowerCase().trim();
-  console.log(searchBar);
   clearData();
   const filteredGuides = dataGuides.data.guides.filter((guide) => {
     const nameIsEqual = guide.patient.name
@@ -271,6 +271,7 @@ function search() {
     createCells(filteredGuides, currentPage);
   }
 }
+// função para a pesquisa de pacientes por filtragem de data
 const dateSelect = () => {
   const inputInitialDate = document.querySelector(".inputInitialDate").value;
   const inputFinalDate = document.querySelector(".inputFinalDate").value;
@@ -288,14 +289,14 @@ const dateSelect = () => {
   clearData();
   createCells(filteredGuidesByDate, currentPage);
 };
-
+// função para o botão que retorna para o primeiro e último dia do mês
 setMonthButton = () => {
   document.querySelector(".inputInitialDate").value =
     firstDay.toLocaleDateString("en-CA");
   document.querySelector(".inputFinalDate").value =
     finalDay.toLocaleDateString("en-CA");
 };
-
+// função que retorna para o dia atual
 setDayButton = () => {
   document.querySelector(".inputInitialDate").value =
     new Date().toLocaleDateString("en-CA");
