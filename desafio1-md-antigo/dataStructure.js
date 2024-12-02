@@ -80,7 +80,7 @@ const createOptions = async () => {
     select.appendChild(option);
   });
 };
-// função para criar a paginação
+// função para criar a paginação 
 const createList = async () => {
   await fetchPoints();
   const parentElement = document.querySelector("#page-item-parent");
@@ -122,6 +122,8 @@ const createCells = (guides, page, guidesPerPage = totalPerPage) => {
 
   clearData();
   currentPageGuides.forEach((guide) => {
+    console.log("Linha para o paciente:", guide.patient.name);
+
     const data = new Date(guide.start_date).toLocaleDateString("pt-BR");
     let row = table.insertRow();
     const profileImg =
@@ -174,7 +176,7 @@ const clickPreviousPage = () => {
   }
   updatePageLinks();
 };
-// função para atualizar o estado dos botões de navegação
+// função para atualizar o estado dos botões de navegação 
 const updatePageLinks = () => {
   const totalGuides = dataGuides.data.guides.length;
   totalPages = totalGuides / totalPerPage;
