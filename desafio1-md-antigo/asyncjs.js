@@ -1,3 +1,5 @@
+// codigo abaixo não utilizado, logo não deveira está aqui
+
 const rand = (min, max) => {
   min *= 1000;
   max *= 1000;

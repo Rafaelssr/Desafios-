@@ -1,3 +1,14 @@
+/*
+PONTO ENCONTRADO: 
+- Ao pesquisar por um nome que não estja na pagina não é exibido o resultado da pesquisa
+- Botao de order paciente nao está funcionando
+- Filtro de data está errado, o valor que se inicia não devia exibir nada
+
+
+
+*/
+
+
 let dataGuides;
 let insuranceGuides;
 let currentPage = 1;
@@ -16,12 +27,13 @@ const inputFinalDate = document.querySelector(".inputFinalDate");
 
 // função para capturar os dados
 const fetchPoints = async () => {
-  try {
+  try { // trocar try por catch .then e .catch
     const guideResponse = await fetch(
       "https://augustoferreira.com/augustoferreira/amigo/guides.json"
     ).catch((error) => {
       alert("Erro ao buscar dados do JSON :", error);
-    });
+    }); // espaço entre o metodo fetch
+    
 
     const insuranceResponse = await fetch(
       "https://augustoferreira.com/augustoferreira/amigo/insurances.json"
@@ -39,7 +51,7 @@ const fetchPoints = async () => {
 
 // função para criar as células com as informações capturadas
 const callFetch = async () => {
-  const { dataGuides } = await fetchPoints();
+  const { dataGuides } = await fetchPoints(); 
   createCells(dataGuides.data.guides, currentPage);
 };
 
@@ -60,14 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // função para apagar as linhas iniciais da tabela (utilizando nodeList)
 const clearData = () => {
   const table = document.querySelector(".table");
-  [...table.childNodes[3].children].forEach((tr) =>
-    table.childNodes[3].removeChild(tr)
-  );
+  [...table.childNodes[3].children].forEach((tr) => table.childNodes[3].removeChild(tr));
 };
 
 // função para criar as opções de convênio
-const createOptions = async () => {
-  await fetchPoints();
+const createOptions = async () => { // createOptions deve ser chamada quando insuranceGuides acabar de receber os valores do fetch
+  await fetchPoints(); // se insuranceGuides já tem os valores pq chamar novamente?
 
   const allOption = document.createElement("option");
 
@@ -164,7 +174,7 @@ const clickNextPage = () => {
     currentPage++;
     clearData();
     createCells(dataGuides.data.guides, currentPage);
-  }
+  } // quebrar linha
   updatePageLinks();
 };
 
@@ -199,7 +209,7 @@ const updatePageLinks = () => {
     nextLink.disabled = false;
     nextLink.classList.remove("blockedLink");
   }
-};
+}; // quebrar linha
 const clickLastPage = () => {
   currentPage = totalPages;
   clearData();
@@ -207,7 +217,6 @@ const clickLastPage = () => {
 };
 
 // função para a ordenação dos nomes dos pacientes
-
 const buttonStatus = () => {
   const icon = document.querySelector("i");
   const patientNames = dataGuides.data.guides;
@@ -274,8 +283,8 @@ function search() {
 
 // função para a pesquisa de pacientes por filtragem de data
 const dateSelect = () => {
-  const inputInitialDate = document.querySelector(".inputInitialDate").value;
-  const inputFinalDate = document.querySelector(".inputFinalDate").value;
+  const inputInitialDate = document.querySelector(".inputInitialDate").value; // importar global e usar o valor
+  const inputFinalDate = document.querySelector(".inputFinalDate").value; // importar global e usar o valor
   const dateInitial = inputInitialDate;
   const dateFinal = inputFinalDate;
   const filteredGuidesByDate = dataGuides.data.guides.filter((guide) => {
