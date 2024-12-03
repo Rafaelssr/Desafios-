@@ -5,8 +5,15 @@ const totalPerPage = 2;
 let totalPages;
 totalPages = 5;
 
+const table = document.querySelector(".table tbody");
+const select = document.querySelector(".select");
+const previousLink = document.getElementById("previous");
+const nextLink = document.getElementById("next");
+const parentElement = document.querySelector("#page-item-parent");
+const patientButton = document.querySelector(".patientButton");
 const inputInitialDate = document.querySelector(".inputInitialDate");
 const inputFinalDate = document.querySelector(".inputFinalDate");
+
 // função para capturar os dados
 const fetchPoints = async () => {
   try {
@@ -15,6 +22,7 @@ const fetchPoints = async () => {
     ).catch((error) => {
       alert("Erro ao buscar dados do JSON :", error);
     });
+
     const insuranceResponse = await fetch(
       "https://augustoferreira.com/augustoferreira/amigo/insurances.json"
     ).catch((error) => {
@@ -28,6 +36,7 @@ const fetchPoints = async () => {
     console.error("error", error);
   }
 };
+
 // função para criar as células com as informações capturadas
 const callFetch = async () => {
   const { dataGuides } = await fetchPoints();
@@ -40,17 +49,15 @@ let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 let finalDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelector(".inputInitialDate").value =
-    firstDay.toLocaleDateString("en-CA");
-  document.querySelector(".inputFinalDate").value =
-    finalDay.toLocaleDateString("en-CA");
+  document.querySelector(".inputInitialDate").value = firstDay.toLocaleDateString("en-CA");
+  document.querySelector(".inputFinalDate").value = finalDay.toLocaleDateString("en-CA");
 
   createOptions();
   createList();
-});
-const table = document.querySelector(".table tbody");
 
-// // função para apagar as linhas iniciais da tabela (utilizando nodeList)
+});
+
+// função para apagar as linhas iniciais da tabela (utilizando nodeList)
 const clearData = () => {
   const table = document.querySelector(".table");
   [...table.childNodes[3].children].forEach((tr) =>
@@ -62,8 +69,7 @@ const clearData = () => {
 const createOptions = async () => {
   await fetchPoints();
 
-  const select = document.querySelector(".select");
-  let allOption = document.createElement("option");
+  const allOption = document.createElement("option");
 
   select.innerHTML = "";
 
@@ -73,17 +79,17 @@ const createOptions = async () => {
   select.appendChild(allOption);
 
   insuranceGuides?.data.forEach((insurance) => {
-    let option = document.createElement("option");
+    const option = document.createElement("option");
     option.classList.add("insuranceOptions");
     option.value = insurance.id;
     option.textContent = insurance.name;
     select.appendChild(option);
   });
 };
+
 // função para criar a paginação
 const createList = async () => {
   await fetchPoints();
-  const parentElement = document.querySelector("#page-item-parent");
 
   parentElement.innerHTML = "";
 
@@ -91,14 +97,15 @@ const createList = async () => {
   const numberOfPages = totalGuides / totalPerPage;
 
   for (i = 1; i <= numberOfPages; i++) {
-    let li = document.createElement("li");
-    let anchor = document.createElement("a");
+    const li = document.createElement("li");
+    const anchor = document.createElement("a");
 
     li.classList.add("page-item");
     anchor.classList.add("page-link");
     anchor.textContent = i;
 
     const page = i;
+
     anchor.addEventListener("click", () => {
       createCells(dataGuides.data.guides, page);
 
@@ -111,51 +118,46 @@ const createList = async () => {
     parentElement.appendChild(li);
   }
 };
+
 // função que cria as células e linhas da tabela
 const createCells = (guides, page, guidesPerPage = totalPerPage) => {
   const arrayOfGuides = Array.isArray(guides) ? guides : [];
 
-  const currentPageGuides = arrayOfGuides.slice(
-    (page - 1) * guidesPerPage,
-    page * guidesPerPage
-  );
+  const currentPageGuides = arrayOfGuides.slice((page - 1) * guidesPerPage, page * guidesPerPage);
 
   clearData();
+
   currentPageGuides.forEach((guide) => {
     const data = new Date(guide.start_date).toLocaleDateString("pt-BR");
-    let row = table.insertRow();
-    const profileImg =
-      guide.patient.thumb_url ||
-      `https://cdn-icons-png.freepik.com/512/8742/8742495.png`;
+    const row = table.insertRow();
+    const profileImg = guide.patient.thumb_url || `https://cdn-icons-png.freepik.com/512/8742/8742495.png`;
 
     row.insertCell().innerHTML = data;
-    row.insertCell().innerHTML = guide.number || `<td class="Null">-</td>`;
-    const name = guide.patient.name;
-    row.insertCell().innerHTML =
-      `<img src="${profileImg}" class="img"></img>` + `<span>${name}</span>`;
+    row.insertCell().innerHTML = guide.number || `<td class="absentGuideInfo">-</td>`;
+    row.insertCell().innerHTML =`<img src="${profileImg}" class="img"></img>` + `<span>${guide.patient.name}</span>`;
 
     const insuranceCell = row.insertCell();
-    insuranceCell.innerHTML =
-      guide.health_insurance?.name || `<td class="Null">-</td>`;
-    if (guide.health_insurance?.is_deleted === true) {
+    insuranceCell.innerHTML = guide.health_insurance?.name || `<td class="absentGuideInfo">-</td>`;
+    if (guide.health_insurance?.is_deleted) {
       insuranceCell.classList.add("linethrough");
     }
 
     isNaN(guide.price) || guide.price === null
-      ? (row.insertCell().innerHTML = `<tdclass="Null">-</td>`)
+      ? (row.insertCell().innerHTML = `<tdclass="absentGuideInfo">-</td>`)
       : (row.insertCell().innerHTML = guide.price.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         }));
   });
+
 };
+
 //funções para os botões da paginação
 const clickFirstPage = () => {
   currentPage = 1;
   clearData();
   createCells(dataGuides.data.guides, currentPage);
 };
-let nextLink = document.getElementById("next");
 
 const clickNextPage = () => {
   if (currentPage < totalPages) {
@@ -172,14 +174,16 @@ const clickPreviousPage = () => {
     clearData();
     createCells(dataGuides.data.guides, currentPage);
   }
+
   updatePageLinks();
+  
 };
+
 // função para atualizar o estado dos botões de navegação
 const updatePageLinks = () => {
   const totalGuides = dataGuides.data.guides.length;
   totalPages = totalGuides / totalPerPage;
 
-  const previousLink = document.getElementById("previous");
   if (currentPage === 1) {
     previousLink.disabled = true;
     previousLink.classList.add("blockedLink");
@@ -188,7 +192,6 @@ const updatePageLinks = () => {
     previousLink.classList.remove("blockedLink");
   }
 
-  const nextLink = document.getElementById("next");
   if (currentPage === totalPages) {
     nextLink.disabled = true;
     nextLink.classList.add("blockedLink");
@@ -202,8 +205,9 @@ const clickLastPage = () => {
   clearData();
   createCells(dataGuides.data.guides, currentPage);
 };
+
 // função para a ordenação dos nomes dos pacientes
-const patientButton = document.querySelector(".patientButton");
+
 const buttonStatus = () => {
   const icon = document.querySelector("i");
   const patientNames = dataGuides.data.guides;
@@ -221,13 +225,13 @@ const buttonStatus = () => {
     icon.classList.remove("fa-sort-down");
     icon.classList.add("fa-sort-up");
   }
-  createCells(patientNames);
+  createCells(patientNames, currentPage);
 };
+
 patientButton.addEventListener("click", buttonStatus);
 
 // função para o evento do select
 function selectOptions() {
-  const select = document.querySelector(".select");
   const selectedInsuranceId = parseInt(select.value);
 
   if (selectedInsuranceId === 0) {
@@ -259,7 +263,6 @@ function search() {
     const numberIsEqual = guide.number.includes(parseInt(searchBar));
     return nameIsEqual || numberIsEqual;
   });
-  console.log(filteredGuides);
   if (!filteredGuides.length) {
     clearData();
     table.insertRow().innerHTML = `<td colspan="5" style="text-align: center;">Nenhuma guia encontrada</td>`;
@@ -268,6 +271,7 @@ function search() {
     createCells(filteredGuides, currentPage);
   }
 }
+
 // função para a pesquisa de pacientes por filtragem de data
 const dateSelect = () => {
   const inputInitialDate = document.querySelector(".inputInitialDate").value;
@@ -277,26 +281,30 @@ const dateSelect = () => {
   const filteredGuidesByDate = dataGuides.data.guides.filter((guide) => {
     return guide.start_date >= dateInitial && guide.start_date <= dateFinal;
   });
-  console.log(filteredGuidesByDate);
   if (filteredGuidesByDate.length === 0) {
     clearData();
     table.innerHTML = `<td colspan="5" style="text-align: center;">Nenhuma guia encontrada</td>`;
     return;
   }
+
   clearData();
   createCells(filteredGuidesByDate, currentPage);
 };
+
 // função para o botão que retorna para o primeiro e último dia do mês
 setMonthButton = () => {
   document.querySelector(".inputInitialDate").value =
     firstDay.toLocaleDateString("en-CA");
   document.querySelector(".inputFinalDate").value =
     finalDay.toLocaleDateString("en-CA");
+  
 };
+
 // função que retorna para o dia atual
 setDayButton = () => {
   document.querySelector(".inputInitialDate").value =
     new Date().toLocaleDateString("en-CA");
   document.querySelector(".inputFinalDate").value =
     new Date().toLocaleDateString("en-CA");
+  
 };
