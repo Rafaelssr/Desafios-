@@ -9,13 +9,56 @@
 // - Totais por tiss_type (tipo de guia)
 // - Agrupar procedimentos por atendimento
 // - Agrupar procedimentos por financeiro
-// - Totais por data (dia / mes / ano)
+// - Totais por data (dia / mes / ano) 
 
 import _data from "./jsonDashboard.js";
 const dataCopy = _data;
 console.log(dataCopy);
 
-const groupedObjet = dataCopy.reduce((result, obj) => {
-  result[obj.category] = result[obj.category] || [].push(obj);
-  return result;
-}, {});
+
+
+
+const arrayFiltering = () => {
+  let attendanceId;
+  let groupKeys;
+  let financeId;
+  let tissArray;
+  const arrayGroups = dataCopy.filter((guides) => {
+     attendanceId = guides.attendance_id;
+     groupKeys = guides.group_key;
+     financeId = guides.finance_id;
+     tissArray = guides.tiss_type;
+     console.log(financeId);
+    })
+  
+}
+
+const createTable = () => {
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const tbody = document.createElement('tbody');
+  const tableDiv = document.querySelector('.tableDiv');
+
+  const headingRow = table.insertRow();
+  const headingTitles = [ 'Attendance_id', 'Finance_id', 'GroupKey', 'ID' ];
+
+  headingTitles.forEach((title) => {
+    const th = document.createElement('th');
+    th.textContent = title;
+    headingRow.appendChild(th);
+    
+  })
+   tbody.appendChild(thead);
+  table.appendChild(tbody);
+  tableDiv.appendChild(table);
+}
+
+
+
+
+const awakeFunctions = () => {
+  arrayFiltering();
+  createTable();
+
+}
+awakeFunctions();
