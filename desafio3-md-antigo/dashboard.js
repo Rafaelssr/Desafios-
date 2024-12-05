@@ -11,18 +11,11 @@
 // - Agrupar procedimentos por financeiro
 // - Totais por data (dia / mes / ano)
 
-import data from "./jsonDashboard"; 
+import _data from "./jsonDashboard.js";
+const dataCopy = _data;
+console.log(dataCopy);
 
-const fetchPoints = async () => {
-  try {
-      const guideResponse = await fetch("./jsonDashboard.js");
-      const data = await guideResponse.json();
-      console.log(data);
-  } catch (error) {
-    
-    console.error("error", error);
-  }
- 
-};
-
-fetchPoints();
+const groupedObjet = dataCopy.reduce((result, obj) => {
+  result[obj.category] = result[obj.category] || [].push(obj);
+  return result;
+}, {});

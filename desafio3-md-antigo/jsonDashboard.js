@@ -5127,4 +5127,4 @@ const data = [
   },
 ];
 
-exports.data = data;
+export default data;

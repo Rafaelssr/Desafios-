@@ -17,7 +17,7 @@ body{
 }
 p{
 	align-self: end;
-	margin-bottom: 20px !important; 
+	margin-bottom: 25px !important; 
 }
 .select, .input, .inputInitialDate, .inputFinalDate{
 	border: 1px solid #cbc9c9;
@@ -25,6 +25,7 @@ p{
 	margin-left: 1em;
 	padding: 0.1rem;
 	margin-top: 2em;
+	height: 2.5em;
 	margin-bottom: 1em;
 }
 
@@ -90,16 +91,13 @@ span{
 
 .monthButton, .dayButton{
 	background-color: rgb(65, 137, 220);
-	border-radius: 0.3em;
 	color: #fff;
 	border: none;
-	height: 2em;
-	width: 3em;
-	padding:1px;
+	height: 2.5em;
+	width: 4em;
 }
 
 .buttons{
-	gap: 0.4em;
 	display: flex;
 	margin-top: 2em;
 	margin-left: 1em;
