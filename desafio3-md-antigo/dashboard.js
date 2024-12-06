@@ -13,34 +13,69 @@
 
 import _data from "./jsonDashboard.js";
 const dataCopy = _data;
-console.log(dataCopy);
+//console.log(dataCopy); 
 
+let currentPage = 1;
+let totalPages = dataCopy.length;
+let itemsPerPage = 10;
 
+const table = document.createElement('table');
+const thead = document.createElement('thead');
+const tbody = document.createElement('tbody');
+const tableDiv = document.querySelector('.tableDiv');
 
+const paginateItems = (array, page, itemsPerPage) => {
+  return array.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+};
 
 const arrayFiltering = () => {
-  let attendanceId;
-  let groupKeys;
-  let financeId;
-  let tissArray;
-  const arrayGroups = dataCopy.filter((guides) => {
-     attendanceId = guides.attendance_id;
-     groupKeys = guides.group_key;
-     financeId = guides.finance_id;
-     tissArray = guides.tiss_type;
-     console.log(financeId);
-    })
-  
+  const groupedbyAttendance = dataCopy // acessar o attendance_id e verificar quantas vezes os valores se repetem 
+    .filter(guide => guide['procedure_id'] !== null)
+    .reduce((acc, key) => {
+      let keygroup = key[ 'procedure_id' ];
+
+      if (!acc[keygroup]) {
+        acc[ keygroup ] = {
+          count: 1
+        }
+      }
+      if(acc[keygroup]){
+        acc[ keygroup ].count++;
+      }
+
+      return acc;
+    }, {});
+    console.log(groupedbyAttendance);
 }
 
-const createTable = () => {
-  const table = document.createElement('table');
-  const thead = document.createElement('thead');
-  const tbody = document.createElement('tbody');
-  const tableDiv = document.querySelector('.tableDiv');
+arrayFiltering();
+  // const financeIdArray = arrayKeys.finance_id;
+  // const attendanceIdArray = arrayKeys.attendance_id;
+  // const groupKeyArray = arrayKeys.group_key;
+  // const procedureIdArray = arrayKeys.procedure_id;
 
+  // const arrayOfPrices = arrayKeys.price;
+  // const arrayOfRecievedValue = arrayKeys.received_value;
+  // const arrayOfLiquidPrices = arrayKeys.liquid_price;
+  // const arrayOfTiss = arrayKeys.tiss_type;
+
+
+  // attendanceIdArray.forEach(el => {
+  //   const tr = document.createElement('tr');
+  //   const td = document.createElement('td');
+
+  //   td.textContent = `ids : ${el}`;
+
+  //   thead.appendChild(td);
+  //   thead.appendChild(tr);
+
+  // })
+
+// }
+
+const createTable = () => {
   const headingRow = table.insertRow();
-  const headingTitles = [ 'Attendance_id', 'Finance_id', 'GroupKey', 'ID' ];
+  const headingTitles = [ 'Attendance ids', 'Finance ids', 'group keys', 'ID' ];
 
   headingTitles.forEach((title) => {
     const th = document.createElement('th');
@@ -48,17 +83,24 @@ const createTable = () => {
     headingRow.appendChild(th);
     
   })
-   tbody.appendChild(thead);
+
+  tbody.appendChild(thead);
   table.appendChild(tbody);
   tableDiv.appendChild(table);
+
+  table.classList.add('table', 'table-bordered');
+
 }
 
 
 
 
-const awakeFunctions = () => {
-  arrayFiltering();
+const startFunctions = () => {
+  // arrayFiltering();
   createTable();
-
 }
-awakeFunctions();
+
+startFunctions();
+
+
+
