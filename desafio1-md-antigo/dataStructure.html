@@ -21,7 +21,7 @@
         <p>Pesquisar :</p>
         <input
           type="text"
-          placeholder="Buscar..."
+          placeholder=" Buscar..."
           class="input"
           onkeyup="search()"
         />
@@ -51,11 +51,10 @@
 
     </section>
 
-<!-- trocar elemento abaixo por footer, aumentando a semantica HTML -->
-	<nav aria-label="Page navigation example"> 
+	<footer aria-label="Page navigation example"> 
 		<ul class="pagination">
 			<li class="page-item">
-				<a class="page-link" href="#" tabindex="-1" aria-disabled="true" id="first-page-link" onclick="clickFirstPage()">Primeiro</a>
+				<a class="page-link"  id="first" href="#" tabindex="-1" aria-disabled="true" id="first-page-link" onclick="clickFirstPage()">Primeiro</a>
 			  </li>
 		  <li class="page-item">
 			<a class="page-link" class="previousPage" id="previous" href="#" tabindex="-1" aria-disabled="true" onclick="clickPreviousPage()">Anterior</a>
@@ -64,11 +63,11 @@
 		  <li class="page-item">
 			<a class="page-link" id="next" href="#" onclick="clickNextPage()">Próximo</a>
 			<li class="page-item">
-				<a class="page-link" href="#" tabindex="-1" aria-disabled="true" onclick="clickLastPage()">Último</a>
+				<a class="page-link" id="last" href="#" tabindex="-1" aria-disabled="true" onclick="clickLastPage()">Último</a>
 			  </li>
 		  </li>
 		</ul>
-	  </nav>
+  </footer>
   </body>
   <script
   src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
