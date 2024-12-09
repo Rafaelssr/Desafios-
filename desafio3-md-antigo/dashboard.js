@@ -13,10 +13,9 @@
 
 import _data from "./jsonDashboard.js";
 const dataCopy = _data;
-//console.log(dataCopy); 
 
 let currentPage = 1;
-let totalPages = dataCopy.length;
+let totalPages ;
 let itemsPerPage = 10;
 
 const table = document.createElement('table');
@@ -28,54 +27,30 @@ const paginateItems = (array, page, itemsPerPage) => {
   return array.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 };
 
-const arrayFiltering = () => {
-  const groupedbyAttendance = dataCopy // acessar o attendance_id e verificar quantas vezes os valores se repetem 
-    .filter(guide => guide['procedure_id'] !== null)
+const dataTreatment = (guides) => {
+  const info = dataCopy
+    .filter(guide => (value => value !== null && value !== undefined))
     .reduce((acc, key) => {
-      let keygroup = key[ 'procedure_id' ];
+    let keyGroup = key[guides];
 
-      if (!acc[keygroup]) {
-        acc[ keygroup ] = {
-          count: 1
-        }
-      }
-      if(acc[keygroup]){
-        acc[ keygroup ].count++;
-      }
+    if (!acc[keyGroup]) acc[keyGroup] = {count: 0}
+    
+    if (acc[keyGroup]) acc[keyGroup].count++;
 
-      return acc;
+    return acc;
     }, {});
-    console.log(groupedbyAttendance);
+  
+  return info;
 }
 
-arrayFiltering();
-  // const financeIdArray = arrayKeys.finance_id;
-  // const attendanceIdArray = arrayKeys.attendance_id;
-  // const groupKeyArray = arrayKeys.group_key;
-  // const procedureIdArray = arrayKeys.procedure_id;
 
-  // const arrayOfPrices = arrayKeys.price;
-  // const arrayOfRecievedValue = arrayKeys.received_value;
-  // const arrayOfLiquidPrices = arrayKeys.liquid_price;
-  // const arrayOfTiss = arrayKeys.tiss_type;
-
-
-  // attendanceIdArray.forEach(el => {
-  //   const tr = document.createElement('tr');
-  //   const td = document.createElement('td');
-
-  //   td.textContent = `ids : ${el}`;
-
-  //   thead.appendChild(td);
-  //   thead.appendChild(tr);
-
-  // })
-
-// }
 
 const createTable = () => {
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const tbody = document.createElement('tbody');
   const headingRow = table.insertRow();
-  const headingTitles = [ 'Attendance ids', 'Finance ids', 'group keys', 'ID' ];
+  const headingTitles = [ 'Attendance ids', 'Finance ids', 'group keys', 'procedure ids' ];
 
   headingTitles.forEach((title) => {
     const th = document.createElement('th');
@@ -83,6 +58,13 @@ const createTable = () => {
     headingRow.appendChild(th);
     
   })
+
+
+  finalData.forEach(row => {
+    const tr = document.createElement('tr');
+
+  })
+
 
   tbody.appendChild(thead);
   table.appendChild(tbody);
@@ -93,13 +75,32 @@ const createTable = () => {
 }
 
 
+const attendanceFilter = dataTreatment('attendance_id');
+const financeFilter = dataTreatment('finance_id');
+const groupKeyFilter = dataTreatment('group_key');
+const procedureIdFilter = dataTreatment('procedure_id');
 
+const uniteData = (filters) => {
+  const finalData = filters.reduce((acc, filter) => {
+    Object.entries(filter).forEach(([key, value]) => {
+      if (!acc[key]) acc[key] = {count :0};
+      acc[key] = value.count;
+    });
+
+    return acc;
+  }, {});
+
+  return Object.entries(finalData).map(([key, counts]) => ({ key, ...counts }));
+};
 
 const startFunctions = () => {
-  // arrayFiltering();
   createTable();
+  // const attendanceItens = Object.entries(attendanceFilter).map(([key, value]) => {});
+  // const financeItens = Object.entries(financeFilter).map(([key, value]) => {});
+  // const groupKeyItens = Object.entries(groupKeyFilter).map(([key, value]) => {console.log(key)});
 }
-
+const finalData = uniteData([attendanceFilter, financeFilter, groupKeyFilter, procedureIdFilter]);
+console.log(finalData);
 startFunctions();
 
 
