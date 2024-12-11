@@ -123,7 +123,7 @@ const createList = async () => {
 };
 
 // função que cria as células e linhas da tabela
-const createCells = (guides) => {
+const createCells = guides => {
   clearData();
 
   guides.forEach((guide) => {

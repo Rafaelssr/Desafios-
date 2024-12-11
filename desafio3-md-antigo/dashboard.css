@@ -1,4 +1,13 @@
-.text  {
-    text-align: center;
+.paginationArea{
+    display:flex;   
+    justify-content: center;
 }
 
+#button{
+    background-color: #212529 ;
+    color: white;
+    border: none; 
+    border-radius: 2px;
+    margin: 3px;
+    padding: 5px;
+}
