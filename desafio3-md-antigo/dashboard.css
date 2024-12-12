@@ -11,3 +11,26 @@
     margin: 3px;
     padding: 5px;
 }
+
+#container{
+    display: flex;
+    width:60%;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10rem;
+    margin-top: 10em;
+}
+
+.changeButton{
+    display: flex;
+    height: 3em;
+    width: 3em;
+    margin-right: 5em;
+    margin-top: 24rem;
+}
+
+.globalDiv{
+    display: flex;
+    justify-content: center;
+    gap:5em;
+}
