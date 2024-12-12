@@ -18,23 +18,23 @@ const nextPage = document.querySelector(".nextButton");
 const prevPage = document.querySelector(".previousButton");
 const firstPage = document.querySelector(".firstButton");
 const lastPage = document.querySelector(".lastButton");
-const firstCurrentPage = 1;
-
-let currentPage = 1;
-let totalPerPage = 15;
-let totalPages = 10;
-let lastCurrentPage = Math.ceil(dataCopy.length / totalPages);
-console.log(lastCurrentPage);
-
-const pagination = (array, page) => {
-  // console.log(array);
-  return array.slice((page - 1) * totalPerPage, page * totalPerPage);
-};
-
+const changeInfoButton = document.querySelector(".changeInfoButton");
+const globalDiv = document.querySelector(".globalDiv");
 const tableDiv = document.querySelector(".tableDiv");
 const table = document.createElement("table");
 const tbody = document.createElement("tbody");
-// const thead = document.createElement("thead");
+const container = document.querySelector("#container");
+
+const firstCurrentPage = 1;
+let currentPage = 1;
+let totalPerPage = 10;
+let totalPages = 18;
+let lastCurrentPage =  totalPages;
+console.log(lastCurrentPage);
+
+const pagination = (array, page) => {
+  return array.slice((page - 1) * totalPerPage, page * totalPerPage);
+};
 
 const dataTreatment = (guides) => {
   const info = dataCopy
@@ -77,12 +77,7 @@ const finalGroupKeyData = uniteData([groupKeyFilter]);
 
 const createTable = (data, data2, data3, data4) => {
   const headingRow = table.insertRow();
-  const headingTitles = [
-    "Attendance ids",
-    "Finance ids",
-    "group keys",
-    "procedure ids",
-  ];
+  const headingTitles = ["Attendance ids", "Finance ids", "group keys", "procedure ids"];
 
   headingTitles.forEach((title) => {
     const th = document.createElement("th");
@@ -95,27 +90,36 @@ const createTable = (data, data2, data3, data4) => {
 
   tbody.innerHTML = "";
 
-  data.forEach((_, i) => {
-    const keyFormatter = (value) => {
-      const format = value.match(/IDX_\d+/);
-
-      return format;
-    };
-    const row = document.createElement("tr");
-
-    row.setAttribute("style", "text-align: center");
-    row.classList.add("table-dark");
-    row.textContent = "";
-
-    row.insertCell().textContent = data[i].key;
-    row.insertCell().textContent = data4[i].key;
-    row.insertCell().textContent = keyFormatter(data2[i].key);
-    row.insertCell().textContent =
-      data3[i]?.key && data3[i]?.key !== "null" ? data3[i]?.key : "-";
-
-    tbody.appendChild(row);
+  const keyFormatter = (value) => {const format = value.match(/IDX_\d+/); return format};
+  
+  data.forEach((_filter, i) => {
+    const tr = document.createElement("tr");
+    tr.setAttribute("style", "text-align: center");
+    tr.classList.add("table-dark");
+    tr.textContent = "";
+    
+    tr.insertCell().textContent = data[i].key;
+    tr.insertCell().textContent = data4[i].key;
+    tr.insertCell().textContent = keyFormatter(data2[i].key);
+    tr.insertCell().textContent = data3[i]?.key && data3[i]?.key !== "null" ? data3[i]?.key : "-";
+  
+    tbody.appendChild(tr);
   });
+  
+  const finalGrouping = [ finalAttendanceData, finalFinanceData, finalGroupKeyData, finalProcedureData ];
 
+  const groupRow = document.createElement("tr");
+  groupRow.setAttribute("style", "text-align: center");
+  groupRow.classList.add("table-dark");
+
+  finalGrouping.forEach((group) => {
+    const groupCell = document.createElement("td");
+    groupCell.textContent = `qnt : ${group.length}`;
+
+      groupRow.appendChild(groupCell);
+    })
+    
+  tbody.appendChild(groupRow);
   table.appendChild(tbody);
   tableDiv.appendChild(table);
 
@@ -131,8 +135,10 @@ nextPage.addEventListener("click", () => {
     const prcdColumn = pagination(finalProcedureData, currentPage);
     const financeColumn = pagination(finalFinanceData, currentPage);
     createTable(arrayAtt, grpKeyColumn, prcdColumn, financeColumn);
+
   } else return;
 });
+
 prevPage.addEventListener("click", () => {
   console.log(currentPage);
   if (currentPage !== firstCurrentPage) {
@@ -158,7 +164,6 @@ firstPage.addEventListener("click", () => {
 });
 
 lastPage.addEventListener("click", () => {
-  console.log(currentPage);
   if (currentPage < lastCurrentPage) {
     currentPage = lastCurrentPage;
     const attColumn = pagination(finalAttendanceData, currentPage);
@@ -168,6 +173,51 @@ lastPage.addEventListener("click", () => {
     createTable(attColumn, grpKeyColumn, prcdColumn, financeColumn);
   }
 });
+
+const clearTableElements = () => {
+  container.innerHTML = "";
+  changeInfoButton.remove(); 
+}
+
+const createGraphic = () => {
+  const ctx = document.getElementById('myChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+
+
+ const returnButton = document.createElement("button");
+ returnButton.addEventListener("click", () => {
+  createGraphic();
+ })
+
+changeInfoButton.addEventListener("click", () => {
+  clearTableElements();
+  globalDiv.appendChild(returnButton);
+});
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const attColumn = pagination(finalAttendanceData, currentPage);

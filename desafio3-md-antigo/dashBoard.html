@@ -13,14 +13,27 @@
     <title>Dashboard - Desafio 03</title>
   </head>
   <body>
-    <div class="tableDiv" style="display: flex; justify-content: center"></div>
-    <div class="paginationArea">
-      <button class="firstButton" id="button">Primeiro</button>
-      <button class="previousButton" id="button">Anterior</button>
-      <button class="nextButton" id="button">Próximo</button>
-      <button class="lastButton" id="button">Último</button>
+    <div class="globalDiv">
+      <div id="container">
+        <div class="tableDiv" style="display: flex; justify-content: center"></div>
+        <div class="paginationArea">
+          <button class="firstButton" id="button">Primeiro</button>
+          <button class="previousButton" id="button">Anterior</button>
+          <button class="nextButton" id="button">Próximo</button>
+          <button class="lastButton" id="button">Último</button>
+        </div>
+      </div>
+      <div class="changeButton">
+        <button class="changeInfoButton" id="button"> >> </button>
+      </div>
+      <div class="graphicDiv">
+        <canvas id="myChart"></canvas>
+      </div>
     </div>
   </body>
+  <script 
+    src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
   <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
