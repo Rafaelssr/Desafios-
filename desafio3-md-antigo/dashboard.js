@@ -11,6 +11,7 @@
 // - Agrupar procedimentos por financeiro
 // - Totais por data (dia / mes / ano)
 
+import data from "./jsonDashboard.js";
 import _data from "./jsonDashboard.js";
 const dataCopy = _data;
 
@@ -30,15 +31,13 @@ let currentPage = 1;
 let totalPerPage = 10;
 let totalPages = 18;
 let lastCurrentPage =  totalPages;
-console.log(lastCurrentPage);
 
 const pagination = (array, page) => {
   return array.slice((page - 1) * totalPerPage, page * totalPerPage);
 };
 
 const dataTreatment = (guides) => {
-  const info = dataCopy
-    .filter(() => (value) => value !== null && value !== undefined)
+  const info = dataCopy.filter(() => (value) => value !== null && value !== undefined)
     .reduce((acc, key) => {
       let keyGroup = key[guides];
 
@@ -53,12 +52,10 @@ const dataTreatment = (guides) => {
 };
 
 const uniteData = (filters) => {
-  const finalData = filters.reduce((acc, filter) => {
-    Object.entries(filter).forEach(([key, value]) => {
-      if (!acc[key]) acc[key] = { count: 0 };
+  const finalData = filters.reduce((acc, filter) => {Object.entries(filter).forEach(([key, value]) => {
+      if (!acc[key]) acc[key] = {count: 0};
       if (acc[key]) acc[key].count += value.count;
     });
-
     return acc;
   }, {});
 
@@ -69,11 +66,45 @@ const attendanceFilter = dataTreatment("attendance_id");
 const financeFilter = dataTreatment("finance_id");
 const groupKeyFilter = dataTreatment("group_key");
 const procedureIdFilter = dataTreatment("procedure_id");
-
+const priceFilter = dataTreatment("price");
+const liquidPriceFiter = dataTreatment("liquid_price");
+const receivedValueFilter = dataTreatment("received_value"); 
+const tissTypeFilter = dataTreatment("tiss_type");
+// console.log(tissTypeFilter)
 const finalAttendanceData = uniteData([attendanceFilter]);
 const finalFinanceData = uniteData([financeFilter]);
 const finalProcedureData = uniteData([procedureIdFilter]);
 const finalGroupKeyData = uniteData([groupKeyFilter]);
+
+const finalPrices = uniteData([priceFilter]);
+const finalLiquidPrices = uniteData([liquidPriceFiter]);
+const finalReceivedValues = uniteData([receivedValueFilter]);
+const finalTissType = uniteData([tissTypeFilter]);
+console.log(finalLiquidPrices)
+
+
+
+// CRIAR UMA FUNÇÃO QUE REALIZE OS REDUCES NOS VALORES DESEJADOS. A FUNÇÃO TERÁ O SEGUINTE FORMATO :
+const totalPrice = finalPrices.reduce((acc, item) => {
+  const keyValue = item.key;
+  const countValue = item.count;
+  if (isNaN(keyValue) || keyValue === null || keyValue === undefined) {
+    console.log('invalid key : ', keyValue);
+    return;
+  }
+
+  const result = (acc + (keyValue * countValue));
+ 
+  return result;
+}, 0)
+const tmp = totalPrice.toFixed(3);
+console.log(tmp)
+// NESTE REDUCE EU RECEBI O VALOR DESEJADO EM RELAÇÃO AO TOTAL PRICE, MAS PRECISO REALIZAR O MESMO PROCEDIMENTO COM OUTROS ASPECTOS DAS FINANÇAS
+
+// console.log(priceFilter)
+// console.log(finalPrices)
+
+
 
 const createTable = (data, data2, data3, data4) => {
   const headingRow = table.insertRow();
