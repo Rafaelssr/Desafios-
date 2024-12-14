@@ -70,7 +70,7 @@ const priceFilter = dataTreatment("price");
 const liquidPriceFiter = dataTreatment("liquid_price");
 const receivedValueFilter = dataTreatment("received_value"); 
 const tissTypeFilter = dataTreatment("tiss_type");
-// console.log(tissTypeFilter)
+console.log(tissTypeFilter)
 const finalAttendanceData = uniteData([attendanceFilter]);
 const finalFinanceData = uniteData([financeFilter]);
 const finalProcedureData = uniteData([procedureIdFilter]);
@@ -80,31 +80,37 @@ const finalPrices = uniteData([priceFilter]);
 const finalLiquidPrices = uniteData([liquidPriceFiter]);
 const finalReceivedValues = uniteData([receivedValueFilter]);
 const finalTissType = uniteData([tissTypeFilter]);
-console.log(finalLiquidPrices)
+// console.log(finalLiquidPrices)
 
 
 
 // CRIAR UMA FUNÇÃO QUE REALIZE OS REDUCES NOS VALORES DESEJADOS. A FUNÇÃO TERÁ O SEGUINTE FORMATO :
-const totalPrice = finalPrices.reduce((acc, item) => {
-  const keyValue = item.key;
-  const countValue = item.count;
-  if (isNaN(keyValue) || keyValue === null || keyValue === undefined) {
-    console.log('invalid key : ', keyValue);
-    return;
-  }
 
-  const result = (acc + (keyValue * countValue));
+const totalOfValues = (price1, price2, price3) => {
+  const listOfValues = (list) =>
+    list.reduce((acc, item) => {
+      const keyValue = item.key; const countValue = item.count;
+      
+      if (isNaN(keyValue) || keyValue === null || keyValue === undefined) {
+        console.log('invalid key : ', keyValue);
+        return acc;
+      };
  
-  return result;
-}, 0)
-const tmp = totalPrice.toFixed(3);
-console.log(tmp)
+      const result = (acc + (keyValue * countValue));
+      return result;
+    }, 0)
+  
+  const totalValue = parseFloat(listOfValues(price1).toFixed(2));
+  const totalLiquidValue = parseFloat(listOfValues(price2).toFixed(2));
+  const recivedValues = parseFloat(listOfValues(price3).toFixed(2));
+  const valuesNotReceived = parseFloat((listOfValues(price2) - listOfValues(price3)).toFixed(2))
+
+  return {totalValue, totalLiquidValue, recivedValues, valuesNotReceived};
+}
+const result = totalOfValues(finalLiquidPrices, finalPrices, finalReceivedValues)
+console.log(result) // me foi exibido um objeto. caso eu precise de um array , basta mudar os parentêsis do result da função.
+
 // NESTE REDUCE EU RECEBI O VALOR DESEJADO EM RELAÇÃO AO TOTAL PRICE, MAS PRECISO REALIZAR O MESMO PROCEDIMENTO COM OUTROS ASPECTOS DAS FINANÇAS
-
-// console.log(priceFilter)
-// console.log(finalPrices)
-
-
 
 const createTable = (data, data2, data3, data4) => {
   const headingRow = table.insertRow();
