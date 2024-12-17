@@ -3,7 +3,7 @@
     justify-content: center;
 }
 
-#button{
+button{
     background-color: #212529 ;
     color: white;
     border: none; 
@@ -14,7 +14,9 @@
 
 #container{
     display: flex;
+    flex-direction: column;
     width:60%;
+    height: 100%;
     flex-direction: column;
     justify-content: center;
     margin-left: 10rem;
@@ -23,14 +25,37 @@
 
 .changeButton{
     display: flex;
+    justify-content: center;
     height: 3em;
     width: 3em;
     margin-right: 5em;
     margin-top: 24rem;
 }
 
+/* .returnButton{
+    width: 2em;
+    margin-right: 5em;
+    margin-top: 24rem;
+    align-self : center;
+    margin: 3px;
+    padding: 5px; 
+} */
+
 .globalDiv{
     display: flex;
+    width:100%;
+    height: 100%;
     justify-content: center;
-    gap:5em;
+
+}
+
+.graphicDiv{
+    width: 50em;
+    height: 30em;
+}
+
+#myChart{
+    margin-top: 10em;
+    height: 855px;
+    width: 509px;
 }
