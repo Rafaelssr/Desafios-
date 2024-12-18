@@ -12,6 +12,82 @@
 // - Totais por data (dia / mes / ano)
 
 import _data from "./jsonDashboard.js";
+
+console.log('total liquido', _data.reduce((acc, item) => acc + item.liquid_price, 0));
+console.log('total price', _data.reduce((acc, item) => acc + item.price, 0));
+
+let totalFinanceId = {};
+_data.forEach(item => {
+  if (!totalFinanceId[item.finance_id]) {
+    totalFinanceId[item.finance_id] =  1;
+  } else {
+    totalFinanceId[item.finance_id]++;
+  }
+});
+console.log('total por finance_id', totalFinanceId);
+
+let totalNaoRecebido = {};
+_data.forEach(item => {
+  if (!totalNaoRecebido[item.procedure_id]) {
+    totalNaoRecebido[item.procedure_id] =  item.liquid_price - item.received_value;
+  } else {
+    totalNaoRecebido[item.procedure_id] += item.liquid_price - item.received_value;
+  }
+}); 
+console.log('total nao recebido por procedure_id', totalNaoRecebido);
+
+let totalPorTiss = {};
+_data.forEach(item => {
+  if (!totalPorTiss[item.tiss_type]) {
+    totalPorTiss[item.tiss_type] =  1;
+  } else {
+    totalPorTiss[item.tiss_type]++;
+  }
+});
+console.log('total por tiss_type', totalPorTiss);
+
+let totalPorAtendimento = {};
+_data.forEach(item => {
+  if (!totalPorAtendimento[item.attendance_id]) {
+    totalPorAtendimento[item.attendance_id] =  1;
+  } else {
+    totalPorAtendimento[item.attendance_id]++;
+  }
+});
+console.log('total por attendance_id', totalPorAtendimento);
+
+let totalPorProcedureId = {};
+_data.forEach(item => {
+  if (!totalPorProcedureId[item.procedure_id]) {
+    totalPorProcedureId[item.procedure_id] =  1;
+  } else {
+    totalPorProcedureId[item.procedure_id]++;
+  }
+});
+console.log('total por procedure_id', totalPorProcedureId);
+
+let totalPorGroupKey = {};
+_data.forEach(item => {
+  if (!totalPorGroupKey[item.group_key]) {
+    totalPorGroupKey[item.group_key] =  1;
+  } else {
+    totalPorGroupKey[item.group_key]++;
+  }
+});
+console.log('total por group_key', totalPorGroupKey);
+
+let TotaisPorData = {};
+_data.forEach(item => {
+  if (!TotaisPorData[item.created_at]) {
+    TotaisPorData[item.created_at] =  item.liquid_price;
+  } else {
+    TotaisPorData[item.created_at] += item.liquid_price;
+  }
+});
+console.log('Totais por data', TotaisPorData);
+
+// Bater criterios de aceite acima
+
 const dataCopy = _data;
 
 const nextPage = document.querySelector(".nextButton");
