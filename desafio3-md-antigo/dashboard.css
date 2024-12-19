@@ -17,33 +17,52 @@ button{
     flex-direction: column;
     width:60%;
     height: 100%;
-    flex-direction: column;
     justify-content: center;
     margin-left: 10rem;
     margin-top: 10em;
 }
 
+.cardDiv p{
+    margin-top: 1em;
+    margin-left: 1em;
+}
+
 .changeButton{
+    display: flex;
+    flex-direction: column;
+    gap:4em;
+    justify-content: center;
+    height: 3em;
+    width: 8em;
+    margin-right: 6em;
+    margin-top: 24rem;
+}
+
+.cardDiv{
+    background-color: #212529;
+    color: white;
+    width: 20%;
+    height: 5em;
+}
+.globalDiv{
+    display:flex;
+    justify-content: end;
+    flex-direction: row;
+}
+/* .secondChangeButton{
     display: flex;
     justify-content: center;
     height: 3em;
     width: 3em;
     margin-right: 5em;
     margin-top: 24rem;
-}
-
-/* .returnButton{
-    width: 2em;
-    margin-right: 5em;
-    margin-top: 24rem;
-    align-self : center;
-    margin: 3px;
-    padding: 5px; 
 } */
+
 
 .globalDiv{
     display: flex;
     width:100%;
+    gap: 1em;
     height: 100%;
     justify-content: center;
 
