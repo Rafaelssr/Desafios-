@@ -31,7 +31,6 @@ const arrayFinal = somaDeIndices(arrayFiltrado);
 const arraySemNaN = arrayFiltrado.filter((element) => !isNaN(element));
 
 filtraImpares(arraySemNaN);
-console.log(arraySemNaN);
 
 // for (i = 0; i < arrayNumeros.length; i++) {
 //   let indice = arrayNumeros[i];

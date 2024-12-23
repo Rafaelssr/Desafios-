@@ -1,80 +1,77 @@
-.paginationArea{
-    display:flex;   
+ body{
+    background-color: rgb(2, 2, 2);
+    display: flex;
     justify-content: center;
+    align-items: center;
 }
 
-button{
+ button{
     background-color: #212529 ;
     color: white;
-    border: none; 
+    border: none;
     border-radius: 2px;
-    margin: 3px;
+    margin: 10px 3px 0px 3px ;
     padding: 5px;
 }
 
-#container{
-    display: flex;
-    flex-direction: column;
-    width:60%;
-    height: 100%;
-    justify-content: center;
-    margin-left: 10rem;
-    margin-top: 10em;
-}
-
-.cardDiv p{
-    margin-top: 1em;
-    margin-left: 1em;
-}
-
-.changeButton{
-    display: flex;
-    flex-direction: column;
-    gap:4em;
-    justify-content: center;
-    height: 3em;
-    width: 8em;
-    margin-right: 6em;
-    margin-top: 24rem;
-}
-
-.cardDiv{
+.tissTypeDiv{
+   padding: 0.5em;
+   border: 1px solid white;
     background-color: #212529;
-    color: white;
-    width: 20%;
-    height: 5em;
+    color:white;
+    margin-right: 1em;
 }
-.globalDiv{
-    display:flex;
-    justify-content: end;
-    flex-direction: row;
+
+.tissTypeDiv li {
+    list-style: none;
 }
-/* .secondChangeButton{
+
+table.table.table-bordered{
+    margin: 0 auto;
+    max-height: min-height;
+    min-height: 622px;
+    max-width: min-width;
+    min-width: 922px;
+    table-layout: auto;
+    margin-top: 5em;
+}
+.fa-solid.fa-filter{
+    margin-left : 1em;
+}
+
+table th, table td{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.graphic{
     display: flex;
     justify-content: center;
-    height: 3em;
-    width: 3em;
-    margin-right: 5em;
-    margin-top: 24rem;
-} */
+    width: max-content;
+    height: max-content;
+}
 
+.changeInfo{
+  display: flex;
+  justify-content: center;
+}
 
-.globalDiv{
-    display: flex;
-    width:100%;
-    gap: 1em;
-    height: 100%;
+.paginationArea.show-only-last button:not(:last-child) {
+    display: none;
+}
+
+#container{
+    display : flex;
     justify-content: center;
-
+    flex-direction: column;
 }
 
-.graphicDiv{
-    width: 50em;
-    height: 30em;
+.paginationArea{
+    display: flex;
+    justify-content: center;
 }
 
-#myChart{
-    margin-top: 10em;
-    height: 855px;
-    width: 509px;
-}
+#dayChart, #monthChart, #yearChart {
+    max-width: 100%;
+    height: 400px;
+  }

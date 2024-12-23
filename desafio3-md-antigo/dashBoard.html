@@ -9,33 +9,41 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-    <link href="dashboard.css" rel="stylesheet"/>
+    <link
+     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"
+    >
+    <link href="dashboard.css" rel="stylesheet" />
     <title>Dashboard - Desafio 03</title>
   </head>
   <body>
-    <div class="globalDiv">
-      <div id="container">
-        <div class="cardDiv">
-        </div>
-        <div class="tableDiv" style="display: flex; justify-content: center"></div>
-        <div class="paginationArea">
-          <button class="firstButton">Primeiro</button>
-          <button class="previousButton">Anterior</button>
-          <button class="nextButton">Próximo</button>
-          <button class="lastButton">Último</button>
-        </div>
-      </div>
-      <div class="changeButton">
-        <button class="changeInfoButton"> Faturamento </button>
-      </div>
-      <div class="graphicDiv">
-        <canvas id="myChart" style="display:none;"></canvas>
+    <div class="tissTypeDiv">
+      <h3>Tipos de Guias:</h3>
+      <ul>
+        <li>1 - GHI </li>
+        <li>2 - SADT </li>
+        <li>3 - CONSULTA</li>
+      </ul>
+    </div>
+    <div id="container">
+    </div>
+    <div class="paginationArea">
+      <button class="firstButton">Primeiro</button>
+      <button class="previousButton">Anterior</button>
+      <button class="nextButton">Próximo</button>
+      <button class="lastButton">Último</button>
+      <div class="changeInfo">
+        <button class="changeInfoButton">Faturamento</button>
       </div>
     </div>
+    <div class="graphic">
+      <!-- <canvas id="myChart" style="width: 600px; height: 400px; box-sizing: border-box;"></canvas> -->
+      <canvas id="dayChart" width="600px" height="600px"></canvas>
+      <canvas id="monthChart" width="500px" height="600px"></canvas>
+      <canvas id="yearChart" width="500px" height="600px"></canvas>
+    </div>
+    </div>
   </body>
-  <script 
-    src="https://cdn.jsdelivr.net/npm/chart.js">
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

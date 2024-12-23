@@ -277,7 +277,7 @@ function selectOptions() {
 //função para o evento da barra de pesquisa
 function search() {
   const searchBar = document.querySelector(".input").value.toLowerCase().trim();
-  
+
   clearData();
 
   const filteredGuides = dataGuides.data.guides.filter((guide) => {
