@@ -20,7 +20,7 @@ import _data from "./jsonDashboard.js";
 const liquidPrice =  _data.reduce((acc, item) => acc + item.liquid_price, 0);
 const totalPrice = _data.reduce((acc, item) => acc + item.price, 0);
 const valueNotReceived = _data.reduce((acc, item) => acc + (item.liquid_price - item.received_value), 0);
-console.log(valueNotReceived);
+// console.log(valueNotReceived);
 const dataCopy = _data;
 
 const nextPage = document.querySelector(".nextButton");
@@ -30,7 +30,7 @@ const lastPage = document.querySelector(".lastButton");
 const changeInfoButton = document.querySelector(".changeInfoButton");
 const tissTypeDiv = document.querySelector(".tissTypeDiv");
 const paginationArea = document.querySelector(".paginationArea");
-
+const valueText = document.querySelector(".valueText");
 const dayGraphicButton = document.createElement("button");
 const monthGraphicButton = document.createElement("button");
 const yearGraphicButton = document.createElement("button");
@@ -42,6 +42,7 @@ const container = document.querySelector("#container");
 const table = document.createElement("table");
 const tbody = document.createElement("tbody");
 
+let currentChart;
 let buttonIsClicked = false;
 const firstCurrentPage = 1;
 let currentPage = 1;
@@ -58,7 +59,6 @@ _data.forEach((item) => {
     totalFinanceId[item.finance_id]++;
   }
 });
-console.log(Object.values(totalFinanceId))
 
 let totalNotReceived = {};
 _data.forEach((item) => {
@@ -98,7 +98,6 @@ _data.forEach((item) => {
     totalPerProcedureId[item.procedure_id]++;
   }
 });
-console.log("total por procedimento", Object.values(totalPerProcedureId))
 
 let totalPerGroupKey = {};
 _data.forEach((item) => {
@@ -109,29 +108,42 @@ _data.forEach((item) => {
   }
 });
 
+const formatISODate = (dateString) => {
+  const [datePart, timePart] = dateString.split(' ');
+  const [year, month, day] = datePart.split('-');
+  const time = timePart.split('+')[ 0 ].split('.')[ 0 ];
+
+  return `${day}/${month}/${year}`;
+}
+
 let totalPerDate = {};
 _data.forEach((item) => {
+  let formattedDate = formatISODate(item.created_at);
   if (!totalPerDate[item.created_at]) {
-    totalPerDate[item.created_at] = item.liquid_price;
+    totalPerDate[formattedDate] = item.liquid_price;
   } else {
-  totalPerDate[ item.created_at ] += item.liquid_price;
+  totalPerDate[formattedDate] += item.liquid_price;
   }
 });
-// console.log(totalPerDate)
+console.log(totalPerDate)
 
-  let totalPerMonth = {};
-  let totalPerYear = {};
+let totalPerMonth = {};
+let totalPerYear = {};
+
 _data.forEach((item) => {
-  let date = new Date(item.created_at);
-  let day = date.toLocaleDateString("en-CA");
-  let month = date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0');
-  let year = date.getFullYear();
+  let date = formatISODate(item.created_at);
+  let [ day, month, yearAndTime ] = date.split('/');
+  let year = yearAndTime.split(' ')[ 0 ];
 
-  totalPerDate[day] = (totalPerDate[day] || 0) + item.liquid_price;
+  let dayLabel = `${day}/${month}/${year}`;
+  let monthLabel = `${year}-${month}`;
+  let yearLabel = year;
 
-  totalPerMonth[month] = (totalPerMonth[month] || 0) + item.liquid_price;
+  totalPerDate[dayLabel] = (totalPerDate[dayLabel] || 0) + item.liquid_price;
+  // console.log(dayLabel)
+  totalPerMonth[monthLabel] = (totalPerMonth[monthLabel] || 0) + item.liquid_price;
 
-  totalPerYear[year] = (totalPerYear[year] || 0) + item.liquid_price;
+  totalPerYear[yearLabel] = (totalPerYear[yearLabel] || 0) + item.liquid_price;
 });
 
 let dailyLabels = Object.keys(totalPerDate);
@@ -188,7 +200,6 @@ const finalProcedureData = uniteData([procedureIdFilter]);
 const finalGroupKeyData = uniteData([groupKeyFilter]);
 const finalTissTypeData = uniteData([tissTypeFilter]);
 
-//att //fin   //gp //pro   //tiss
 const createTable = (data, data2, data3, data4) => {
 
   let repetitionCounts = { totalAttendances, totalFinanceId, totalPerProcedureId, totalPerGroupKey };
@@ -208,21 +219,22 @@ const createTable = (data, data2, data3, data4) => {
 
   tbody.innerHTML = "";
 
-  const ic = `<i class="fa-solid fa-filter"></i>`;
+  const ic = `<i class="fa-solid fa-circle-info"></i>`;
 
   const keyFormatter = (value) => {const format = value.match(/IDX_\d+/); return format};
 
   const idFormatter = (info1, info2) => {
     if (!info1 || !info2 || info1 === "null" || info2 === "null") {
       return "-";
+    } else {
+      return `${info1}-${info2} ${ic}`;
     }
-    return `${info1}-${info2} ${ic}`;
   };
 
   const createIconWithTooltip = (_id, count) => {
     const icon = document.createElement("i");
-    icon.classList.add("fa-solid", "fa-filter");
-    icon.setAttribute("style", "margin-left: 5px;");
+    icon.classList.add("fa-solid", "fa-circle-info");
+    icon.setAttribute("style", "margin-left: 8px;");
 
     const repetitionCount = count || 0;
     icon.setAttribute("title", `Este ID se repete ${repetitionCount} vez(es).`);
@@ -268,7 +280,7 @@ const createTable = (data, data2, data3, data4) => {
     const attendanceProcedureCell = tr.insertCell();
     const attendanceWithProcudure = idFormatter(attendanceId, procedureId);
     attendanceProcedureCell.innerHTML = attendanceWithProcudure;
-    attendanceProcedureCell.appendChild = (createIconWithTooltip(attendanceWithProcudure, repetitionCounts.totalAttendances[attendanceId]));
+    attendanceProcedureCell.appendChild = (createIconWithTooltip(attendanceWithProcudure, repetitionCounts.totalAttendances[attendanceId] + repetitionCounts.totalPerProcedureId[procedureId]));
 
     tbody.appendChild(tr);
   });
@@ -281,59 +293,11 @@ const createTable = (data, data2, data3, data4) => {
   return table;
 };
 
-// const createGraphic = () => {
-//   const canvas1 = document.getElementById('myChart');
-
-//   const ctx = canvas1.getContext('2d');
-//   canvas1.style.display = "block";
-//   new Chart(ctx, {
-//     type: "doughnut",
-//     data: {
-//       labels: [
-//         "Total",
-//         "Líquido",
-//         "Não recebido"
-//       ],
-//       datasets: [
-//         {
-//           data: [
-//             liquidPrice,
-//             totalPrice,
-//             valueNotReceived
-//           ],
-//           backgroundColor: [
-//             "rgba(255, 99, 132, 0.2)",
-//             "rgba(54, 162, 235, 0.2)",
-//             "rgba(75, 192, 192, 0.2)"
-//           ],
-//           borderColor: [
-//             "rgba(255, 99, 132, 1)",
-//             "rgba(54, 162, 235, 1)",
-//             "rgba(75, 192, 192, 1)"
-//           ],
-//           borderWidth: 1,
-//         },
-//       ],
-//     },
-//     options: {
-//       responsive: true,
-//       maintainAspectRatio: false,
-//       aspectRatio: 2,
-//       scales: {
-//         y: {
-//           beginAtZero: true,
-//         },
-//       },
-//     },
-//   });
-// };
 
 const createDateGraphics = (labels, data) => {
-  const canvas = document.getElementById("dayChart");
-  const ctx = canvas.getContext('2d');
-  canvas.style.display = "block";
-
-  new Chart(ctx,{
+  if (currentChart) { currentChart.destroy(); }
+  const canvas = document.getElementById("chartCanvas").getContext('2d');
+  currentChart = new Chart(canvas,{
     type: 'bar',
     data: {
       labels: labels,
@@ -366,7 +330,6 @@ const createDateGraphics = (labels, data) => {
       },
     },
   });
-
 }
 
 changeInfoButton.addEventListener("click", () => {
@@ -374,7 +337,8 @@ changeInfoButton.addEventListener("click", () => {
     changeInfoButton.textContent = "Procedimentos";
     paginationArea.classList.add("show-only-last");
     tissTypeDiv.style.display = "none";
-    table.style.display = "none";
+    table.style.display = "none"
+
     container.appendChild(dayGraphicButton);
     container.appendChild(monthGraphicButton);
     container.appendChild(yearGraphicButton);
@@ -384,32 +348,45 @@ changeInfoButton.addEventListener("click", () => {
     yearGraphicButton.textContent = "Faturamento Anual";
 
     dayGraphicButton.style.display = "block";
-    // monthGraphicButton.style.display = "block";
-    // yearGraphicButton.style.display = "block";
+    monthGraphicButton.style.display = "block";
+    yearGraphicButton.style.display = "block";
 
-
-    document.querySelector("#dayChart").style.display = "block";
+    document.querySelector(".graphic").style.display = "block";
 
     buttonIsClicked = true;
   } else {
     changeInfoButton.textContent = "Faturamento";
-    table.style.display = "block"
+    table.style.display = "block";
     table.removeAttribute("style", "min-height : 622px;");
+
     paginationArea.style.display = "flex";
     paginationArea.classList.remove("show-only-last");
+
     tissTypeDiv.style.display = "block";
 
     dayGraphicButton.style.display = "none";
     monthGraphicButton.style.display = "none";
     yearGraphicButton.style.display = "none";
 
-    document.querySelector("#dayChart").style.display = "none";
-
-    // document.querySelector("#myChart").style.display = "none";
+    document.querySelector(".graphic").style.display = "none";
 
     buttonIsClicked = false;
   }
 });
+
+const formatValues = new Intl.NumberFormat("pt-BR", {
+  currency: "BRL",
+  style: "currency",
+})
+
+const addInfoToDiv = () => {
+  valueText.classList.add("tissTypeDiv")
+  valueText.textContent = `
+    total não recebido : ${formatValues.format(valueNotReceived)}
+    total Recebido: ${formatValues.format(totalPrice)}
+    total líquido: ${formatValues.format(liquidPrice)}
+  `
+}
 
 nextPage.addEventListener("click", () => {
   if (currentPage < totalPages) {
@@ -467,22 +444,16 @@ lastPage.addEventListener("click", () => {
 });
 
 dayGraphicButton.addEventListener('click', () => {
-  monthChart.style.display = "none";
-  yearChart.style.display = "none";
-  createDateGraphics(dailyLabels, dailyData,'dayChart');
-})
+  createDateGraphics(dailyLabels, dailyData);
+});
 
 monthGraphicButton.addEventListener('click', () => {
-  dayChart.style.display = "none";
-  yearChart.style.display = "none";
-  createDateGraphics(monthlyLabels, monthlyData, 'monthChart');
-})
+  createDateGraphics(monthlyLabels, monthlyData);
+});
 
 yearGraphicButton.addEventListener('click', () => {
-  dayChart.style.display = "none";
-  monthChart.style.display = "none";
-  createDateGraphics(yearlyLabels, yearlyData, 'yearChart');
-} )
+  createDateGraphics(yearlyLabels, yearlyData);
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const attColumn = pagination(finalAttendanceData, currentPage);
@@ -491,10 +462,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const financeColumn = pagination(finalFinanceData, currentPage);
   const tissTypeColumn = pagination(finalTissTypeData, currentPage);
 
-  createTable( attColumn, financeColumn, grpKeyColumn, prcdColumn, tissTypeColumn);
-  // createGraphic(liquidPrice, totalPrice, valueNotReceived);
-  createDateGraphics(dailyLabels, dailyData,'dayChart');
-  document.querySelector("#dayChart").style.display = "none";
-  document.querySelector("#monthChart").style.display = "none";
-  document.querySelector("#yearChart").style.display = "none";
+  createTable(attColumn, financeColumn, grpKeyColumn, prcdColumn, tissTypeColumn);
+  createDateGraphics(dailyLabels, dailyData);
+  document.querySelector(".graphic").style.display = "none";
+  addInfoToDiv();
 });
