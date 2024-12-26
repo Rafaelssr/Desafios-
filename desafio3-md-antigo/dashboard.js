@@ -13,14 +13,13 @@
 // - Agrupar procedimentos por atendimento - ok
 // - Agrupar procedimentos por financeiro - ok
 
-// - Totais por data (dia / mes / ano)
+// - Totais por data (dia / mes / ano) - ok
 
 import _data from "./jsonDashboard.js";
 
-const liquidPrice =  _data.reduce((acc, item) => acc + item.liquid_price, 0);
+const liquidPrice = _data.reduce((acc, item) => acc + item.liquid_price, 0);
 const totalPrice = _data.reduce((acc, item) => acc + item.price, 0);
 const valueNotReceived = _data.reduce((acc, item) => acc + (item.liquid_price - item.received_value), 0);
-// console.log(valueNotReceived);
 const dataCopy = _data;
 
 const nextPage = document.querySelector(".nextButton");
@@ -28,12 +27,13 @@ const prevPage = document.querySelector(".previousButton");
 const firstPage = document.querySelector(".firstButton");
 const lastPage = document.querySelector(".lastButton");
 const changeInfoButton = document.querySelector(".changeInfoButton");
-const tissTypeDiv = document.querySelector(".tissTypeDiv");
+const additionalInfoDiv = document.querySelector(".additionalInfoDiv");
 const paginationArea = document.querySelector(".paginationArea");
 const valueText = document.querySelector(".valueText");
 const dayGraphicButton = document.createElement("button");
 const monthGraphicButton = document.createElement("button");
 const yearGraphicButton = document.createElement("button");
+
 dayGraphicButton.classList.add("button");
 monthGraphicButton.classList.add("button");
 yearGraphicButton.classList.add("button");
@@ -125,22 +125,22 @@ _data.forEach((item) => {
   totalPerDate[formattedDate] += item.liquid_price;
   }
 });
-console.log(totalPerDate)
+// console.log(totalPerDate)
 
 let totalPerMonth = {};
 let totalPerYear = {};
 
 _data.forEach((item) => {
   let date = formatISODate(item.created_at);
-  let [ day, month, yearAndTime ] = date.split('/');
-  let year = yearAndTime.split(' ')[ 0 ];
+  let [day, month, yearAndTime] = date.split('/');
+  let year = yearAndTime.split(' ')[0];
 
   let dayLabel = `${day}/${month}/${year}`;
   let monthLabel = `${year}-${month}`;
   let yearLabel = year;
 
   totalPerDate[dayLabel] = (totalPerDate[dayLabel] || 0) + item.liquid_price;
-  // console.log(dayLabel)
+
   totalPerMonth[monthLabel] = (totalPerMonth[monthLabel] || 0) + item.liquid_price;
 
   totalPerYear[yearLabel] = (totalPerYear[yearLabel] || 0) + item.liquid_price;
@@ -166,7 +166,7 @@ const dataTreatment = (guides) => {
     .reduce((acc, key) => {
       let keyGroup = key[guides];
 
-      if (!acc[keyGroup]) acc[keyGroup] = { count: 0 };
+      if (!acc[keyGroup]) acc[keyGroup] = {count: 0};
 
       if (acc[keyGroup]) acc[keyGroup].count++;
 
@@ -179,15 +179,15 @@ const dataTreatment = (guides) => {
 const uniteData = (filters) => {
   const finalData = filters.reduce((acc, filter) => {
     Object.entries(filter).forEach(([key, value]) => {
-      if (!acc[key]) acc[key] = { count: 0 };
+      if (!acc[key]) acc[key] = {count: 0};
       if (acc[key]) acc[key].count += value.count;
     });
     return acc;
   }, {});
 
-  return Object.entries(finalData).map(([key, counts]) => ({ key, ...counts }));
+  // console.log(Object.entries(finalData).map(([key, counts]) => ({key, ...counts})))
+  return Object.entries(finalData).map(([key, counts]) => ({key, ...counts}));
 };
-
 const attendanceFilter = dataTreatment("attendance_id");
 const financeFilter = dataTreatment("finance_id");
 const groupKeyFilter = dataTreatment("group_key");
@@ -202,7 +202,7 @@ const finalTissTypeData = uniteData([tissTypeFilter]);
 
 const createTable = (data, data2, data3, data4) => {
 
-  let repetitionCounts = { totalAttendances, totalFinanceId, totalPerProcedureId, totalPerGroupKey };
+  let repetitionCounts = {totalAttendances, totalFinanceId, totalPerProcedureId, totalPerGroupKey};
 
   const headingRow = table.insertRow();
 
@@ -219,27 +219,32 @@ const createTable = (data, data2, data3, data4) => {
 
   tbody.innerHTML = "";
 
-  const ic = `<i class="fa-solid fa-circle-info"></i>`;
+  const createIconWithTooltip = (_id,count) => {
+    let icon = document.createElement("i");
 
-  const keyFormatter = (value) => {const format = value.match(/IDX_\d+/); return format};
-
-  const idFormatter = (info1, info2) => {
-    if (!info1 || !info2 || info1 === "null" || info2 === "null") {
-      return "-";
-    } else {
-      return `${info1}-${info2} ${ic}`;
-    }
-  };
-
-  const createIconWithTooltip = (_id, count) => {
-    const icon = document.createElement("i");
     icon.classList.add("fa-solid", "fa-circle-info");
-    icon.setAttribute("style", "margin-left: 8px;");
+    icon.setAttribute("style", "margin-left: 0.5rem;");
 
     const repetitionCount = count || 0;
     icon.setAttribute("title", `Este ID se repete ${repetitionCount} vez(es).`);
 
     return icon;
+  }
+
+  const keyFormatter = (value) => {const format = value.match(/IDX_\d+/); return format};
+
+  const idFormatter = (info1, info2, repetitionCount1, repetitionCount2) => {
+    if (!info1 || !info2 || info1 === "null" || info2 === "null") {
+      return "-";
+    } else {
+      const icon = document.createElement("i");
+
+      icon.classList.add("fa-solid", "fa-circle-info");
+      icon.setAttribute("style", "margin-left: 0.5em;");
+      icon.setAttribute("title", `O ID ${info1} é repetido ${repetitionCount1} vez(es), e o ID ${info2} é repetido ${repetitionCount2} vez(es)`);
+
+      return `${info1}-${info2} ${icon.outerHTML}`;
+    }
   };
 
   data.forEach((_filter, i) => {
@@ -272,15 +277,12 @@ const createTable = (data, data2, data3, data4) => {
     }
 
     const attendanceFinanceCell = tr.insertCell();
-    const attendanceWithFinance = idFormatter(attendanceId, financeId);
+    const attendanceWithFinance = idFormatter(attendanceId, financeId, repetitionCounts.totalAttendances[attendanceId] , repetitionCounts.totalFinanceId[financeId]);
     attendanceFinanceCell.innerHTML = attendanceWithFinance;
 
-    attendanceFinanceCell.appendChild = (createIconWithTooltip(attendanceWithFinance, repetitionCounts.totalAttendances[attendanceId]));
-
     const attendanceProcedureCell = tr.insertCell();
-    const attendanceWithProcudure = idFormatter(attendanceId, procedureId);
+    const attendanceWithProcudure = idFormatter(attendanceId, procedureId, repetitionCounts.totalAttendances[attendanceId], repetitionCounts .totalPerProcedureId[procedureId]);
     attendanceProcedureCell.innerHTML = attendanceWithProcudure;
-    attendanceProcedureCell.appendChild = (createIconWithTooltip(attendanceWithProcudure, repetitionCounts.totalAttendances[attendanceId] + repetitionCounts.totalPerProcedureId[procedureId]));
 
     tbody.appendChild(tr);
   });
@@ -336,7 +338,7 @@ changeInfoButton.addEventListener("click", () => {
   if (!buttonIsClicked) {
     changeInfoButton.textContent = "Procedimentos";
     paginationArea.classList.add("show-only-last");
-    tissTypeDiv.style.display = "none";
+    additionalInfoDiv.style.display = "none";
     table.style.display = "none"
 
     container.appendChild(dayGraphicButton);
@@ -351,18 +353,19 @@ changeInfoButton.addEventListener("click", () => {
     monthGraphicButton.style.display = "block";
     yearGraphicButton.style.display = "block";
 
+    valueText.style.display = "flex;"
     document.querySelector(".graphic").style.display = "block";
 
     buttonIsClicked = true;
   } else {
     changeInfoButton.textContent = "Faturamento";
     table.style.display = "block";
-    table.removeAttribute("style", "min-height : 622px;");
+    table.removeAttribute("style", "min-height: 622px;");
 
     paginationArea.style.display = "flex";
     paginationArea.classList.remove("show-only-last");
 
-    tissTypeDiv.style.display = "block";
+    additionalInfoDiv.style.display = "grid";
 
     dayGraphicButton.style.display = "none";
     monthGraphicButton.style.display = "none";
@@ -374,13 +377,9 @@ changeInfoButton.addEventListener("click", () => {
   }
 });
 
-const formatValues = new Intl.NumberFormat("pt-BR", {
-  currency: "BRL",
-  style: "currency",
-})
+const formatValues = new Intl.NumberFormat("pt-BR", { currency: "BRL", style: "currency", });
 
 const addInfoToDiv = () => {
-  valueText.classList.add("tissTypeDiv")
   valueText.textContent = `
     total não recebido : ${formatValues.format(valueNotReceived)}
     total Recebido: ${formatValues.format(totalPrice)}
@@ -464,6 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   createTable(attColumn, financeColumn, grpKeyColumn, prcdColumn, tissTypeColumn);
   createDateGraphics(dailyLabels, dailyData);
+
   document.querySelector(".graphic").style.display = "none";
   addInfoToDiv();
 });

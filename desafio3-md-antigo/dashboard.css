@@ -14,21 +14,32 @@
     padding: 5px;
 }
 
-.tissTypeDiv{
+.tissTypeDiv , .quantityTpeDiv{
     padding: 0.5em;
+    width: auto;
+    height: auto;
     border: 1px solid white;
     background-color: #212529;
     color:white;
     margin-right: 1em;
 }
 
-.tissTypeDiv li {
+.additionalInfoDiv{
+    display: grid;
+    gap: 1em;
+}
+
+.tissTypeDiv li , .quantityTpeDiv li {
     list-style: none;
 }
 
 .valueText{
-    display: flex;
+     display: flex;
     justify-content: space-evenly;
+    border: 1px solid white;
+    background-color: #212529;
+    color:white;
+    align-self: center;
     margin-top: 1em;
 }
 
