@@ -1,19 +1,21 @@
 // - Suponhamos que você é gestor de uma clínica e deseja obter alguns dados para ter noção da movimentação e execução de procedimentos que estão sendo executados e se os mesmos estão gerando valor considerável.
 // - Você quer saber se o seu faturamento está indo bem!
 
-// - Quantidade de procedimentos agrupado por ID - ok
-// - Quantidade de procedimentos por group_key - ok
-// - Quantidade de procedimentos por attendance_id - ok
-// - Quantidade de procedimentos por finance_id - ok
+// - Quantidade de procedimentos agrupado por ID - ok (concluído)
+// - Quantidade de procedimentos por group_key - ok (concluído)
+// - Quantidade de procedimentos por attendance_id - ok (concluído)
+// - Quantidade de procedimentos por finance_id - ok (concluído)
 
-// - Total produzido (price) - ok , total liquido (liquid_price) - ok , total recebido (received_value) e total não recebido (liquid_price - received_value) por procedure_id
+// - Total produzido (price) - ok , total liquido (liquid_price) - ok , total recebido (received_value) e total não recebido (liquid_price - received_value) por  (concluídos)
 
-// - Totais por tiss_type (tipo de guia) - ok
+// - Totais por tiss_type (tipo de guia) - ok (concluído)
 
-// - Agrupar procedimentos por atendimento - ok
-// - Agrupar procedimentos por financeiro - ok
+// - Agrupar procedimentos por atendimento - ok (concluído)
+// - Agrupar procedimentos por financeiro - ok (concluído)
 
-// - Totais por data (dia / mes / ano) - ok
+// - Totais por data (dia / mes / ano) - ok (concluído)
+
+// adicionar funcionalidade de filtro para os ids da tabela
 
 import _data from "./jsonDashboard.js";
 
@@ -281,7 +283,7 @@ const createTable = (data, data2, data3, data4) => {
     attendanceFinanceCell.innerHTML = attendanceWithFinance;
 
     const attendanceProcedureCell = tr.insertCell();
-    const attendanceWithProcudure = idFormatter(attendanceId, procedureId, repetitionCounts.totalAttendances[attendanceId], repetitionCounts .totalPerProcedureId[procedureId]);
+    const attendanceWithProcudure = idFormatter(attendanceId, procedureId, repetitionCounts.totalAttendances[attendanceId], repetitionCounts.totalPerProcedureId[procedureId]);
     attendanceProcedureCell.innerHTML = attendanceWithProcudure;
 
     tbody.appendChild(tr);
