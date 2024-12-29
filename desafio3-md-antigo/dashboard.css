@@ -90,3 +90,15 @@ table th, table td{
     height: 60vh;
     width: 100vh
 }
+
+tr{
+    text-align: center;
+}
+
+.fa-solid.fa-circle-info{
+    margin-left: 0.5rem;
+}
+
+.fa-solid.fa-filter{
+    margin-left: 0.5rem;
+}

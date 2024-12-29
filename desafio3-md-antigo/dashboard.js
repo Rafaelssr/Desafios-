@@ -111,9 +111,8 @@ _data.forEach((item) => {
 });
 
 const formatISODate = (dateString) => {
-  const [datePart, timePart] = dateString.split(' ');
-  const [year, month, day] = datePart.split('-');
-  const time = timePart.split('+')[ 0 ].split('.')[ 0 ];
+  const [datePart] = dateString.split(' ');
+  const [ year, month, day ] = datePart.split('-');
 
   return `${day}/${month}/${year}`;
 }
@@ -127,7 +126,6 @@ _data.forEach((item) => {
   totalPerDate[formattedDate] += item.liquid_price;
   }
 });
-// console.log(totalPerDate)
 
 let totalPerMonth = {};
 let totalPerYear = {};
@@ -164,7 +162,7 @@ const pagination = (info, page) => {
 
 const dataTreatment = (guides) => {
   const info = dataCopy
-    .filter(() => (value) => value !== null && value !== undefined)
+    .filter(() => value => value !== null && value !== undefined)
     .reduce((acc, key) => {
       let keyGroup = key[guides];
 
@@ -187,9 +185,9 @@ const uniteData = (filters) => {
     return acc;
   }, {});
 
-  // console.log(Object.entries(finalData).map(([key, counts]) => ({key, ...counts})))
   return Object.entries(finalData).map(([key, counts]) => ({key, ...counts}));
 };
+
 const attendanceFilter = dataTreatment("attendance_id");
 const financeFilter = dataTreatment("finance_id");
 const groupKeyFilter = dataTreatment("group_key");
@@ -221,16 +219,25 @@ const createTable = (data, data2, data3, data4) => {
 
   tbody.innerHTML = "";
 
-  const createIconWithTooltip = (_id,count) => {
-    let icon = document.createElement("i");
+  const createIconWithTooltip = (id, count) => {
 
-    icon.classList.add("fa-solid", "fa-circle-info");
-    icon.setAttribute("style", "margin-left: 0.5rem;");
+    const iconHolder = document.createElement("span");
+    let infoIcon = document.createElement("i");
+    let filterIcon = document.createElement("i");
+
+    filterIcon.classList.add("fa-solid", "fa-filter");
+
+    infoIcon.classList.add("fa-solid", "fa-circle-info");
 
     const repetitionCount = count || 0;
-    icon.setAttribute("title", `Este ID se repete ${repetitionCount} vez(es).`);
+    infoIcon.setAttribute("title", `Este ID se repete ${repetitionCount} vez(es).`);
 
-    return icon;
+    filterIcon.setAttribute("title", `você gostaria de filtrar a tabela pelo  ID ${id}?`);
+
+    iconHolder.appendChild(infoIcon);
+    iconHolder.appendChild(filterIcon);
+
+    return iconHolder;
   }
 
   const keyFormatter = (value) => {const format = value.match(/IDX_\d+/); return format};
@@ -239,23 +246,25 @@ const createTable = (data, data2, data3, data4) => {
     if (!info1 || !info2 || info1 === "null" || info2 === "null") {
       return "-";
     } else {
-      const icon = document.createElement("i");
+      const infoIcon = document.createElement("i");
+      const filterIcon = document.createElement("i");
+      filterIcon.classList.add("fa-solid", "fa-filter");
 
-      icon.classList.add("fa-solid", "fa-circle-info");
-      icon.setAttribute("style", "margin-left: 0.5em;");
-      icon.setAttribute("title", `O ID ${info1} é repetido ${repetitionCount1} vez(es), e o ID ${info2} é repetido ${repetitionCount2} vez(es)`);
+      infoIcon.classList.add("fa-solid", "fa-circle-info");
+      infoIcon.setAttribute("title", `O ID ${info1} é repetido ${repetitionCount1} vez(es), e o ID ${info2} é repetido ${repetitionCount2} vez(es)`);
 
-      return `${info1}-${info2} ${icon.outerHTML}`;
+      filterIcon.setAttribute("title", `Você gostaria de filtrar a tabela pelo ID ${info1}, ou pelo ID ${info2}?`)
+      return `${info1}-${info2} ${infoIcon.outerHTML} ${filterIcon.outerHTML}`;
     }
   };
 
   data.forEach((_filter, i) => {
+
     const tr = document.createElement("tr");
-    tr.setAttribute("style", "text-align: center");
     tr.classList.add("table-dark");
     tr.innerHTML = "";
 
-    const attendanceId = data[i]?.key;
+    const attendanceId = data[ i ]?.key;
     const financeId = data2[i]?.key;
     const procedureId = data4[i]?.key;
     const groupKey = data3[i]?.key;
@@ -300,6 +309,7 @@ const createTable = (data, data2, data3, data4) => {
 
 const createDateGraphics = (labels, data) => {
   if (currentChart) { currentChart.destroy(); }
+
   const canvas = document.getElementById("chartCanvas").getContext('2d');
   currentChart = new Chart(canvas,{
     type: 'bar',
